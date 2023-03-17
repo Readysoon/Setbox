@@ -8,5 +8,13 @@ nav {
 }
 
 table {
-    flex-grow: 
+    width: 100%;
+
+}
+
+td {
+    height: auto;
+    border: 1px solid;
+    max-width: 100%;
+    width: auto;
 }
