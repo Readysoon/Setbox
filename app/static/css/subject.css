@@ -24,7 +24,6 @@ table, .progress-bar {
     padding: 12px;
   }  
   a {
-    text-decoration: wavy;
     color: black;
   }
   .progress-bar {
@@ -40,4 +39,7 @@ table, .progress-bar {
     background-color: #2ec617;
     transition: width 0.5s ease-in-out;
   }
-  
+
+  a:hover {
+    color: grey;
+  }

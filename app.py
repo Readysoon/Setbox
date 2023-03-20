@@ -22,7 +22,7 @@ def schedule():
 def subjects():
     connection = get_database_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT subjects.id, subjects.name FROM users JOIN subjects ON users.id = subjects.user_id WHERE users.id = 1')
+    cursor.execute('SELECT subjects.id, subjects.name FROM users JOIN subjects ON users.id = subjects.owner_user_id WHERE users.id = 1')
     subject_names = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -58,6 +58,3 @@ def lesson(lesson_id):
     cursor.close()
     connection.close()
     return render_template('lesson.html', info=lesson_info)
-
-if __name__ == '__main__':
-    app.run(host='localhost', port=3000, debug=True)

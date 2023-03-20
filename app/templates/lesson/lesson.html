@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/lesson.css')}}">
+{% endblock %}
+
 {% block main %}
+<a href="/subject/{{ info[3] }}" class="back-to-subject">Back to subject</a>
 {% if info[1] == None %}
     <h2>{{ info[0] }} - {{ info[2]}}</h2>
 {% else %}

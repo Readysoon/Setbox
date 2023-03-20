@@ -5,6 +5,7 @@ nav {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+<<<<<<< HEAD:static/css/schedule.css
     height: 50px;
 }
 
@@ -34,4 +35,6 @@ td:not(.tdtime) {
 
 .tdtime {
     width: 30px;
+=======
+>>>>>>> main:app/static/css/schedule.css
 }

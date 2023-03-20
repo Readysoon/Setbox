@@ -88,7 +88,8 @@ CREATE TABLE public.lesson (
     date date NOT NULL,
     progress integer,
     start_time time without time zone NOT NULL,
-    end_time time without time zone NOT NULL
+    end_time time without time zone NOT NULL,
+    name character varying(255)
 );
 
 
@@ -117,48 +118,13 @@ ALTER SEQUENCE public.lesson_id_seq OWNED BY public.lesson.id;
 
 
 --
--- Name: studygroup; Type: TABLE; Schema: public; Owner: edvardsmazprecnieks
---
-
-CREATE TABLE public.studygroup (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL
-);
-
-
-ALTER TABLE public.studygroup OWNER TO edvardsmazprecnieks;
-
---
--- Name: studygroup_id_seq; Type: SEQUENCE; Schema: public; Owner: edvardsmazprecnieks
---
-
-CREATE SEQUENCE public.studygroup_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.studygroup_id_seq OWNER TO edvardsmazprecnieks;
-
---
--- Name: studygroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: edvardsmazprecnieks
---
-
-ALTER SEQUENCE public.studygroup_id_seq OWNED BY public.studygroup.id;
-
-
---
 -- Name: subjects; Type: TABLE; Schema: public; Owner: edvardsmazprecnieks
 --
 
 CREATE TABLE public.subjects (
     name character varying(255) NOT NULL,
     id integer NOT NULL,
-    user_id integer NOT NULL,
-    studygroup_id integer
+    owner_user_id integer NOT NULL
 );
 
 
@@ -200,6 +166,19 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO edvardsmazprecnieks;
 
 --
+-- Name: users_and_subject; Type: TABLE; Schema: public; Owner: edvardsmazprecnieks
+--
+
+CREATE TABLE public.users_and_subject (
+    user_id integer NOT NULL,
+    subject_id integer NOT NULL,
+    editor boolean NOT NULL
+);
+
+
+ALTER TABLE public.users_and_subject OWNER TO edvardsmazprecnieks;
+
+--
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: edvardsmazprecnieks
 --
 
@@ -222,18 +201,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: users_in_studygroup; Type: TABLE; Schema: public; Owner: edvardsmazprecnieks
---
-
-CREATE TABLE public.users_in_studygroup (
-    studygroup_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
-ALTER TABLE public.users_in_studygroup OWNER TO edvardsmazprecnieks;
-
---
 -- Name: files id; Type: DEFAULT; Schema: public; Owner: edvardsmazprecnieks
 --
 
@@ -245,13 +212,6 @@ ALTER TABLE ONLY public.files ALTER COLUMN id SET DEFAULT nextval('public.files_
 --
 
 ALTER TABLE ONLY public.lesson ALTER COLUMN id SET DEFAULT nextval('public.lesson_id_seq'::regclass);
-
-
---
--- Name: studygroup id; Type: DEFAULT; Schema: public; Owner: edvardsmazprecnieks
---
-
-ALTER TABLE ONLY public.studygroup ALTER COLUMN id SET DEFAULT nextval('public.studygroup_id_seq'::regclass);
 
 
 --
@@ -278,30 +238,29 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: lesson; Type: TABLE DATA; Schema: public; Owner: edvardsmazprecnieks
 --
 
-
-
---
--- Data for Name: studygroup; Type: TABLE DATA; Schema: public; Owner: edvardsmazprecnieks
---
-
+INSERT INTO public.lesson VALUES (7, 3, '2023-03-10', 90, '17:00:00', '18:00:00', NULL);
+INSERT INTO public.lesson VALUES (8, 3, '2022-11-23', NULL, '11:10:00', '12:50:00', 'Multiplicators');
+INSERT INTO public.lesson VALUES (9, 4, '2022-12-01', NULL, '13:10:00', '16:35:00', 'Math words');
+INSERT INTO public.lesson VALUES (10, 3, '2023-01-01', NULL, '00:01:00', '02:03:00', 'Celebrate New Year with Math');
 
 
 --
 -- Data for Name: subjects; Type: TABLE DATA; Schema: public; Owner: edvardsmazprecnieks
 --
 
-
+INSERT INTO public.subjects VALUES ('Math', 3, 1);
+INSERT INTO public.subjects VALUES ('English', 4, 1);
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: edvardsmazprecnieks
 --
 
-
+INSERT INTO public.users VALUES ('Edvards', 'edvards@edvards.lv', 1);
 
 
 --
--- Data for Name: users_in_studygroup; Type: TABLE DATA; Schema: public; Owner: edvardsmazprecnieks
+-- Data for Name: users_and_subject; Type: TABLE DATA; Schema: public; Owner: edvardsmazprecnieks
 --
 
 
@@ -318,13 +277,6 @@ SELECT pg_catalog.setval('public.files_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.lesson_id_seq', 6, true);
-
-
---
--- Name: studygroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: edvardsmazprecnieks
---
-
-SELECT pg_catalog.setval('public.studygroup_id_seq', 1, false);
 
 
 --
@@ -366,14 +318,6 @@ ALTER TABLE ONLY public.lesson
 
 
 --
--- Name: studygroup studygroup_pkey; Type: CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
---
-
-ALTER TABLE ONLY public.studygroup
-    ADD CONSTRAINT studygroup_pkey PRIMARY KEY (id);
-
-
---
 -- Name: subjects subjects_id_key; Type: CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
 --
 
@@ -390,6 +334,22 @@ ALTER TABLE ONLY public.subjects
 
 
 --
+-- Name: users_and_subject users_and_subject_pkey; Type: CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
+--
+
+ALTER TABLE ONLY public.users_and_subject
+    ADD CONSTRAINT users_and_subject_pkey PRIMARY KEY (user_id, subject_id);
+
+
+--
+-- Name: users_and_subject users_and_subject_user_id_subject_id_key; Type: CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
+--
+
+ALTER TABLE ONLY public.users_and_subject
+    ADD CONSTRAINT users_and_subject_user_id_subject_id_key UNIQUE (user_id, subject_id);
+
+
+--
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
 --
 
@@ -403,14 +363,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_id_key UNIQUE (id);
-
-
---
--- Name: users_in_studygroup users_in_studygroup_pkey; Type: CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
---
-
-ALTER TABLE ONLY public.users_in_studygroup
-    ADD CONSTRAINT users_in_studygroup_pkey PRIMARY KEY (studygroup_id, user_id);
 
 
 --
@@ -438,35 +390,27 @@ ALTER TABLE ONLY public.lesson
 
 
 --
--- Name: subjects subjects_studygroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
---
-
-ALTER TABLE ONLY public.subjects
-    ADD CONSTRAINT subjects_studygroup_id_fkey FOREIGN KEY (studygroup_id) REFERENCES public.studygroup(id);
-
-
---
 -- Name: subjects subjects_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
 --
 
 ALTER TABLE ONLY public.subjects
-    ADD CONSTRAINT subjects_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT subjects_user_id_fkey FOREIGN KEY (owner_user_id) REFERENCES public.users(id);
 
 
 --
--- Name: users_in_studygroup users_in_studygroup_studygroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
+-- Name: users_and_subject users_and_subject_subject_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
 --
 
-ALTER TABLE ONLY public.users_in_studygroup
-    ADD CONSTRAINT users_in_studygroup_studygroup_id_fkey FOREIGN KEY (studygroup_id) REFERENCES public.studygroup(id);
+ALTER TABLE ONLY public.users_and_subject
+    ADD CONSTRAINT users_and_subject_subject_id_fkey FOREIGN KEY (subject_id) REFERENCES public.subjects(id);
 
 
 --
--- Name: users_in_studygroup users_in_studygroup_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
+-- Name: users_and_subject users_and_subject_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: edvardsmazprecnieks
 --
 
-ALTER TABLE ONLY public.users_in_studygroup
-    ADD CONSTRAINT users_in_studygroup_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+ALTER TABLE ONLY public.users_and_subject
+    ADD CONSTRAINT users_and_subject_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
