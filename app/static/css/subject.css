@@ -1,0 +1,45 @@
+table, .progress-bar {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+  }
+  
+  thead {
+    background-color: #f2f2f2;
+  }
+  
+  th {
+    text-align: left;
+    padding: 12px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  td {
+    padding: 12px;
+  }  
+  a {
+    color: black;
+  }
+  .progress-bar {
+    width: 100%;
+    max-width: 800px;
+    height: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+  }
+  
+  .progress {
+    height: 100%;
+    background-color: #2ec617;
+    transition: width 0.5s ease-in-out;
+  }
+
+  a:hover {
+    color: grey;
+  }

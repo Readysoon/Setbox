@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/subject.css')}}">
+{% endblock %}
+
+{% block main %}
+    <h2>{{ subject_name[0] }}</h2>
+    <br><br>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Lesson Name</th>
+            <th>Progress</th>
+        </tr>
+        {% for info in subject_info %}
+            <tr>
+                <th><a href="/lesson/{{ info[3] }}">{{ info[0] }}</a></th>
+                {% if info[1] == None %}
+                    <th></th>
+                {% else %}
+                    <th>{{ info[1] }}</th>
+                {% endif %}
+                {% if info[2] == None %}
+                    <th>Not started</th>
+                {% else %}
+                    <th>{{ info[2] }}%</th>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <h4>Progress</h4>
+    <div class="progress-bar">
+        <div class="progress" style="width: {{ progress }}%;"></div>
+    </div>      
+{% endblock %}

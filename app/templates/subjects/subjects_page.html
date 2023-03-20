@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/subjects_page.css')}}">
+{% endblock %}
+
+{% block main %}
+<h1>Subjects</h1>
+<br><br>
+<div class="button-container">
+    {% for subject in subject_names %}
+    <a href="/subject/{{ subject[0] }}">{{ subject[1] }}</a>
+    {% endfor %}
+</div>
+{% endblock %}
