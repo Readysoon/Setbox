@@ -5,16 +5,33 @@ nav {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+    height: 50px;
+}
+
+.nav1 {
+    vertical-align: middle;
 }
 
 table {
+    margin-top: 0.5%;
     width: 100%;
-
+    table-layout: fixed;
+    height: 600px;
 }
 
 td {
-    height: auto;
     border: 1px solid;
     max-width: 100%;
-    width: auto;
+}
+
+th {
+    border: 1px solid;
+}
+
+td:not(.tdtime) {
+    width:calc((100%-30px)/5);
+}
+
+.tdtime {
+    width: 30px;
 }
