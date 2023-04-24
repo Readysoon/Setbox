@@ -10,7 +10,7 @@ coverage==7.2.3
 css-html-prettify==2.5.5
 cssbeautifier==1.14.7
 dill==0.3.6
-djlint==1.23.3
+djlint==1.19.16
 EditorConfig==0.12.3
 exceptiongroup==1.1.1
 filetype==1.2.0
