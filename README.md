@@ -41,34 +41,36 @@ python 3.9.12, PostgreSQL 15.2
         `pip install -r requirements.txt`
 
 
-5. Import pg_dump into database
+5. Create databases for setbox and setbox_test
+    
+        Run these commands in your PostgreSQl:
+        `CREATE DATABASE setbox;
+         CREATE DATABASE setbox_test;`
 
-        `psql setbox < ./database/setbox_database.sql`
+
+6. Create a copy of .env.template as .env and fill in the project environment variables
+
+        `FLASK_DEBUG=set to True or False
+        DATABASE_URL=postgresql://username:password@localhost:5432/setbox (change username and password to your database data)
+        TESTING_DATABASE_URL=postgresql://username:password@localhost:5432/setbox_test (change username and password to your database data)
+        FLASK_APP=run.py
+        SECRET_KEY=generate a random secret key`
+        
+        
+7. Run upgrade command to generate database tables
+
+        `flask db upgrade`
 
 
-6. Run the app to see if it is working
+8. Create empty directory for storing files
+
+        `mkdir files`
+        
+        
+9. Run the app to see if it is working
 
         `python run.py`
 
 
-### Troubleshooting
 
-If `psql` is not working, try replacing it with whole path. For me, the path is
-`/Application/Postgres.app/Contents/Versions/15/bin/psql`
-
-
-If step 5 is not working, try to create empty database in PostgreSQL:
-
-    `psql`
-
-    `CREATE DATABASE setbox;`
-
-
-Any more problems? Contact @edvardsmazprecnieks .
-
-CSS and HTML Conventions:
-
-* The Navbar is designed in the base.html
-* The content for the body for all pages is in a container in base.html called "flexcontainer" which is set to "display: flex " in base.css
-* The style for all buttons is in base.css
-* 
+Something is not working? Contact @edvardsmazprecnieks .
