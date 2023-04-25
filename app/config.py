@@ -2,7 +2,6 @@ from os import environ
 from dotenv import load_dotenv
 
 
-
 class Config:
     def __init__(self, database_url=None, testing=None):
         load_dotenv()

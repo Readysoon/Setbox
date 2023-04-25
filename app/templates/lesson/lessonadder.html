@@ -13,7 +13,7 @@
             <th>
                 <form method="post">
                     <div class="subjectselector">
-                        <select name="subjects" id="subjects" required>
+                        <select name="subjects" id="subjects">
                             {% for subject in subjects %}
                                 <option value="{{ subject.id }}">{{ subject.name }}</option>
                             {% endfor %} 
