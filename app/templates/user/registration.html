@@ -1,16 +1,16 @@
-{% extends 'base.html'%}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/user_forms.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_forms.css') }}">
+{% endblock head %}
 
 {% block main %}
 
 {% if error %}
-  <p style="color: tomato;">{{ error }}</p>
+  <p class="error">{{ error }}</p>
 {% endif %}
 
-<form method="POST">
+<form method="post">
 
   <label for="fname">First Name</label>
   <input type="text" id="fname" name="fname" required/>
@@ -27,4 +27,4 @@
   <button type="submit">Register</button>
 
 </form>
-{% endblock %}
+{% endblock main %}

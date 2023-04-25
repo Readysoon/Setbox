@@ -3,6 +3,11 @@
     flex-direction: column;
 }
 
+h3 {
+    text-align: center;
+}
+
+
 button {
     align-self: end;
 }
@@ -13,10 +18,12 @@ ul {
 
 .button-container {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
+
 
 a:link { text-decoration: none; }
 

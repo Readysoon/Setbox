@@ -1,37 +1,51 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/lesson.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lesson.css') }}">
+{% endblock head %}
 
 {% block main %}
-<button><a href="/subject/{{ info.Subject.id }}" class="back-to-subject">Back to subject</a></button>
-{% if info.Lesson.name == None %}
-    <h2>{{ info.Subject.name }} - {{ info.Lesson.formatted_date }}</h2>
+<button><a href={{ url_for("subjects.subject_page", subject_id = lesson.Subject.id) }} class="back-to-subject">Back to subject</a></button>
+{% if lesson.Lesson.name == None %}
+    <h2>{{ lesson.Subject.name }} - {{ lesson.Lesson.formatted_date }}</h2>
 {% else %}
-    <h2>{{ info.Lesson.name }} ({{ info.Subject.name }}) - {{ info.Lesson.formatted_date }}</h2>
+    <h2>{{ lesson.Lesson.name }} ({{ lesson.Subject.name }}) - {{ lesson.Lesson.formatted_date }}</h2>
 {% endif %}
-<table>
-    <tr>
-        <th>Name</th>
-        <th>File type</th>
-    </tr>
-    {% for file in files %}
-    <tr>
-        <th><a href="/files/{{file.filename}}" target="_blank">{{ file.name }}</a></th>
-        <th>{{ file.type }}</th>
-    </tr>
-    {% endfor %}
-    <tr>
-        <th>
-            <form action="/upload/{{ info.Lesson.id }}" method="POST" enctype="multipart/form-data">
-                <p><input type="file" name="file">
-                Name: <input type="text" name="name"></p>
-        </th>
-        <th>
-                <button type="submit">Upload</button>
-            </form>
-        </th>
-    </tr>
-</table>
-{% endblock %}
+<div class="middle-div">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>File type</th>
+            <th>Review</th>
+            <th>Delete</th>
+        </tr>
+        {% for file in files %}
+        <tr>
+            <th {% if file.reviewed == True %} style="text-decoration: line-through;"{% endif %}><a href={{ url_for("lesson.download", filename = file.filename) }} target="_blank">{{ file.name }}</a></th>
+            <th>{{ file.type }}</th>
+            <th {% if file.reviewed == True %} style="color: grey;"{% endif %}><a href={{ url_for("lesson.done", file_id = file.id) }}>Done</a></th>
+            <th><a href={{ url_for("lesson.delete", file_id = file.id) }}>Delete</a></th>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>
+                <form action={{ url_for("lesson.upload", lesson_id = lesson.Lesson.id) }} method="post" enctype="multipart/form-data">
+                    <p><input type="file" name="file">
+                    Name: <input type="text" name="name"></p>
+            </th>
+            <th>
+                    <button type="submit">Upload</button>
+                </form>
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </table>
+    <br><br>
+    <form method="post">
+        <label for="lessonname">Change lesson name:</label>
+        <input type="text" id="lessonname" name="lessonname"{% if lesson.Lesson.name != None %} value="{{ lesson.Lesson.name }}" {% endif %}/>
+        <button>Change</button>
+    </form>
+</div>
+{% endblock main %}

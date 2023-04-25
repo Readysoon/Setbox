@@ -3,13 +3,14 @@
 }
 
 .date-input {
-  margin-top: 5px;
-  width: fit-content;
   display: block;
   margin: 0 auto;
-  margin-top: 20px;
   margin-bottom: 20px;
+  margin-top: 5px;
+  margin-top: 20px;
+  width: fit-content;
 }
+
 
 container {
     display: flex;
@@ -18,32 +19,33 @@ container {
 
 table {
   width: 100%;
-  table-layout: fixed;
-  height: 600px;
 }
+
 
 td {
-  border: 1px solid;
-  max-width: 100%;
-}
-
-th {
-  border: 1px solid;
-}
-
-td:not(.tdtime) {
-    width:calc((100%-40px)/5);
-}
-
-.tdtime {
-    width: 40px;
-    text-align: center;
+  border: 1px solid black;
+  padding: 8px;
 }
 
 form div {
     text-align: center;
 }
 
-body{
+
+.add-lesson {
+  background-color: #4CAF50;
+  border-radius: 4px;
+  color: white;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 20px;
+  padding: 12px 24px;
   text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+
+.add-lesson:hover {
+  background-color: #3e8e41;
 }

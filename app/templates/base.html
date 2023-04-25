@@ -5,28 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link
       rel="stylesheet"
-      href="{{url_for('static', filename='css/base.css')}}"
+      href="{{ url_for('static', filename='css/base.css') }}"
     />
-    {% block head %} {% endblock %}
+    {% block head %} {% endblock head %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SetBox</title>
   </head>
   <body>
     <nav>
         <ul>
-          <li><a class="navlink" href="{{url_for('schedule.schedule_no_date')}}">Home</a></li>
+          <li><a href="{{ url_for('user.index') }}">Home</a></li>
           {% if not current_user.is_authenticated %}
-            <li><a class="navlink" href="{{url_for('user.get_login')}}">Login</a></li>
-            <li><a class="navlink" href="{{url_for('user.get_register')}}">Register</a></li>
+            <li><a class="navlink" href="{{ url_for('user.get_login') }}">Login</a></li>
+            <li><a class="navlink" href="{{ url_for('user.get_register') }}">Register</a></li>
           {% endif %}
           {% if current_user.is_authenticated %}
-            <li><a class="navlink" href="{{ url_for('subjects.subjects') }}">Subjects</a></li>
+            <li><a class="navlink" href="{{ url_for('subjects.all_subjects') }}">Subjects</a></li>
+            <li><a class="navlink" href="{{ url_for('schedule.schedule_no_date') }}">Schedule</a></li>
             <li><a class="navlink" href="{{ url_for('user.logout') }}">Logout</a></li>
           {% endif %}
         </ul>
     </nav>
     <div class="flexcontainer">
-      {% block main %} {% endblock %}
+      {% block main %} {% endblock main %}
     </div>
   </body>
 </html>

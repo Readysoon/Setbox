@@ -1,0 +1,19 @@
+[MASTER]
+disable=
+    C0103, # invalid-name
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
+    C0116, # missing-function-docstring
+    E0401, # import-error
+    E1102, # not-callable
+    R0801, # duplicate-code
+    R0903, # too-few-public-methods
+    W0718, # broad-exception-caught
+    W0719, # broad-exception-raised
+
+ignore=
+    migrations,
+    README.md,
+    requirements.txt,
+    venv,
+    tests

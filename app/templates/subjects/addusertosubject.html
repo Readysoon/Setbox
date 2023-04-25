@@ -1,13 +1,13 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/addusertosubject.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/addusertosubject.css') }}">
+{% endblock head %}
 
 {% block main %}
 <h2>{{ subject_names.name }}</h2>
 <div class="button-container">
-    <button><a href="/subject/{{ subject_id }}">Back</a></button>
+    <button><a href={{ url_for('subjects.subject_page', subject_id=subject_id) }}>Back</a></button>
 </div>
 <table>
     <tr>
@@ -16,25 +16,30 @@
     </tr>
     <tr>
         <td>Admin</td>
-        <td>I am the Admin</td>
+        <td>{{ admin.first_name }}</td>
     </tr>
     <tr>
         <td>Editors</td>
-        <td>I am the Editor</td>
-    </tr>
+        <td>{% for editor in editors %}
+            {{ editor.first_name }}<br>
+            {% endfor %}</td>
+    </tr> 
     <tr>
         <td>Viewers</td>
-        <td>I am the Viewer</td>
+        <td>{% for viewer in viewers %}
+            {{ viewer.first_name }}<br>
+            {% endfor %}</td>
     </tr>
 </table>
-<form method="POST" action="">
-    <label for="email">Add a user:</label>
-    <input type="mail" id="email" name="Email" placeholder="samplemail@gmail.com" required>
+<form method="post">
+    <label>Add a user: </label>
+    <label for="email">E-mail</label>
+    <input type="email" id="email" name="email" required/>
     <label for="userrole" class="userrole">Choose role:</label>
     <select name="userrole" id="userrole">
         <option value="editor">Editor</option>
         <option value="viewer">Viewer</option>
     </select>
-    <button class="userrole" type="submit">Submit</button>
+    <button type="submit">Add</button>
 </form>
-{% endblock %}
+{% endblock main %}

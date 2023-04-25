@@ -1,18 +1,18 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/subject.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subject.css') }}">
+{% endblock head %}
 
 {% block main %}
-    <h2>{{ subject_name.name }}</h2>
+    <h2>{{ subject.name }}</h2>
     <div class="button-container-container">
         <div class="button-container-left">
-            <button><a href="/subject">Back</a></button>
+            <button><a href={{ url_for('subjects.all_subjects') }}>Back</a></button>
         </div>
         <div class="button-container-right">
-            <button><a href="/addusertosubject/{{ subject_name.id }}">Add a user to the subject</a></button>
-            <button><a href="/lessonadder">Add a lesson</a></button>
+            <button><a href={{ url_for('subjects.addusertosubject', subject_id = subject.id) }}>Add a user to the subject</a></button>
+            <button><a href={{ url_for('lesson.addlesson') }}>Add a lesson</a></button>
         </div>
     </div>
     <table>
@@ -20,20 +20,22 @@
             <th>Date</th>
             <th>Lesson Name</th>
             <th>Progress</th>
+            <th></th>
         </tr>
-        {% for info in subject_info %}
+        {% for lesson in lessons %}
             <tr>
-                <th><a href="/lesson/{{ info.id }}">{{ info.formatted_date }}</a></th>
-                {% if info.name == None %}
+                <th><a href={{ url_for('lesson.lesson_page', lesson_id = lesson.Lesson.id) }}>{{ lesson.Lesson.formatted_date }}</a></th>
+                {% if lesson.Lesson.name == None %}
                     <th></th>
                 {% else %}
-                    <th>{{ info.name }}</th>
+                    <th>{{ lesson.Lesson.name }}</th>
                 {% endif %}
-                {% if info.progress == None %}
-                    <th>Not started</th>
+                {% if lesson.progress == 0 %}
+                    <th>No progress yet</th>
                 {% else %}
-                    <th>{{ info.progress }}%</th>
+                    <th>{{ lesson.progress }}%</th>
                 {% endif %}
+               <th><form action={{ url_for('lesson.delete_lesson', lesson_id = lesson.Lesson.id) }} method="post"><button>Delete</button></form></th>
             </tr>
         {% endfor %}
     </table>
@@ -42,4 +44,5 @@
     <div class="progress-bar">
         <div class="progress" style="width: {{ progress }}%;"></div>
     </div> 
-{% endblock %}
+    <div class="deletebutton"><form action={{ url_for('subjects.delete_subject', subject_id = subject.id) }} method="post"><button>Delete Subject</button></form></div>
+{% endblock main %}

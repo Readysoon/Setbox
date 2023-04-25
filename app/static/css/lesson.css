@@ -1,36 +1,48 @@
-.back-to-subject{
-    top: 20px;
-    left: 20px;
+.back-to-subject {
     display: block;
+    left: 20px;
+    top: 20px;
     width: fit-content;
 }
 
+
+/* FIX THE F*CKING WIDTH!!!!! */
+.middle-div {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+
+
 table {
     border-collapse: collapse;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 16px;
     font-family: Arial, sans-serif;
-  }
-  
+    font-size: 16px;
+    margin: 0 auto;
+    max-width: auto;
+    width: 100%;
+}
+
+
   thead {
     background-color: #f2f2f2;
-  }
-  
+}
+
   th {
-    text-align: left;
     padding: 12px;
-  }
-  
+    text-align: left;
+}
+
+
   tr:nth-child(even) {
     background-color: #f2f2f2;
-  }
-  
+}
+
   td {
     padding: 12px;
-  } 
+}
+
 
   p {
     font-size: 12px;
-  }
+}

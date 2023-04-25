@@ -5,60 +5,70 @@
   padding-right: 10%;
 }
 
+
 .button-container-container {
-  width: 100%;
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
+
 
 .button-container-left {
-  width: 100%;
   display: flex;
   justify-content: start;
+  width: 100%;
 }
 
+
 .button-container-right {
-  width: 100%;
   display: flex;
   justify-content: end;
+  width: 100%;
 }
+
 
 table, .progress-bar {
   border-collapse: collapse;
-  width: 100%;
-  margin: 0 auto;
-  font-size: 16px;
   font-family: Arial, sans-serif;
+  font-size: 16px;
+  margin: 0 auto;
+  width: 100%;
 }
-  
+
+
 thead {
   background-color: #f2f2f2;
 }
 
-th {
-  text-align: left;
+th, td {
+  height: 10px;
   padding: 12px;
+  text-align: left;
 }
+
 
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-td {
-  padding: 12px;
-}  
-
-.progress-bar {
-  width: 100%;
-  max-width: 800px;
-  height: 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  margin-bottom: 30px
+.deletebutton {
+  display: flex;
+  justify-content: end;
 }
 
+
+.progress-bar {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  height: 20px;
+  margin-bottom: 30px;
+  max-width: 800px;
+  width: 100%;
+}
+
+
 .progress {
-  height: 100%;
   background-color: #2ec617;
+  height: 100%;
   transition: width 0.5s ease-in-out;
 }
