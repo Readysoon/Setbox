@@ -198,10 +198,11 @@ def post_usertosubject(subject_id):
         email = request.form.get("email")
         user_role = request.form.get("userrole")
         user = User.query.filter(User.email == email).first()
-        editor = user_role == "editor"
-        user_in_subject = UserInSubject(
-            user_id=user.id, subject_id=subject_id, editor=editor
-        )
+        editor = (user_role == "editor")
+        if user != None:
+            user_in_subject = UserInSubject(
+                user_id=user.id, subject_id=subject_id, editor=editor
+            )
     db.session.add(user_in_subject)
     db.session.commit()
     return redirect(url_for("subjects.addusertosubject", subject_id=subject_id))
