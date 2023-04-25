@@ -179,17 +179,17 @@ def addusertosubject(subject_id):
         .first()
     )
     editors = (
-        User.query.filter(User.id == UserInSubject.user_id)
-        .filter(UserInSubject.subject_id == Subject.id)
+        User.query.join(UserInSubject)
+        .join(Subject)
         .filter(Subject.id == subject_id)
-        .filter(UserInSubject.editor is True)
+        .filter(UserInSubject.editor == True)
         .all()
     )
     viewers = (
-        User.query.filter(User.id == UserInSubject.user_id)
-        .filter(UserInSubject.subject_id == Subject.id)
+        User.query.join(UserInSubject)
+        .join(Subject)
         .filter(Subject.id == subject_id)
-        .filter(UserInSubject.editor is False)
+        .filter(UserInSubject.editor == False)
         .all()
     )
     return render_template(
@@ -224,6 +224,7 @@ def post_usertosubject(subject_id):
 @login_required
 def delete_subject(subject_id):
     subject = Subject.query.filter(Subject.id == subject_id).first()
-    db.session.delete(subject)
-    db.session.commit()
+    if current_user.id == subject.owner_user_id:
+        db.session.delete(subject)
+        db.session.commit()
     return redirect(url_for("subjects.all_subjects"))

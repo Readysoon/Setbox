@@ -26,7 +26,7 @@
             <div class="button-row">
                 {% for subject in shared_subjects[i:i+3] %}
                     <button>
-                        <a href={{ url_for('subject_page', subject_id = subject.id) }}>{{ subject.name }}</a>
+                        <a href={{ url_for('subjects.subject_page', subject_id = subject.id) }}>{{ subject.name }}</a>
                     </button>
                 {% endfor %}
             </div>
