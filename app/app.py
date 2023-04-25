@@ -5,7 +5,6 @@ from app.config import Config
 from . import subjects, lesson, schedule, user
 
 
-
 def create_app(config_class=Config()):
     app = Flask(__name__)
     app.config.from_object(config_class)

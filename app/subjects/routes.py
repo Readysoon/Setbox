@@ -76,7 +76,11 @@ def calculate_percentage_with_files():
 
 def find_all_lessons_in_subject(subject_id):
     lessons = (
-        db.session.query((calculate_percentage_with_files()).label("progress"), Lesson)
+        db.session.query(
+            (calculate_percentage_with_files()).label("progress"),
+            func.count(File.reviewed == True).label("files"),
+            Lesson,
+        )
         .join(Lesson, Lesson.id == File.lesson_id, full=True)
         .filter(Lesson.subject_id == Subject.id)
         .filter(Subject.id == subject_id)
@@ -125,9 +129,12 @@ def add_subject_func():
             how_frequent = 7
         elif selection == "every_30_days":
             how_frequent = 30
-        add_lessons_every_x_days(subject_id, start_date, end_date, start_time, end_time, how_frequent)
+        add_lessons_every_x_days(
+            subject_id, start_date, end_date, start_time, end_time, how_frequent
+        )
     db.session.commit()
     return redirect(url_for("subjects.all_subjects"))
+
 
 def create_subject_return_id(subject_name, user_id):
     subject = Subject(name=subject_name, owner_user_id=user_id)
@@ -141,6 +148,7 @@ def create_subject_return_id(subject_name, user_id):
     )
     return subject_id
 
+
 def add_lesson(subject_id, date, start_time, end_time):
     lesson = Lesson(
         subject_id=subject_id,
@@ -149,8 +157,12 @@ def add_lesson(subject_id, date, start_time, end_time):
         end_time=end_time,
     )
     db.session.add(lesson)
+    db.session.commit()
 
-def add_lessons_every_x_days(subject_id, start_date, end_date, start_time, end_time, x_days):
+
+def add_lessons_every_x_days(
+    subject_id, start_date, end_date, start_time, end_time, x_days
+):
     delta = end_date - start_date
     for days in range(0, delta.days + 1, x_days):
         date = start_date + timedelta(days=days)
@@ -167,17 +179,17 @@ def addusertosubject(subject_id):
         .first()
     )
     editors = (
-        User.query.filter(User.id == UserInSubject.user_id)
-        .filter(UserInSubject.subject_id == Subject.id)
+        User.query.join(UserInSubject)
+        .join(Subject)
         .filter(Subject.id == subject_id)
-        .filter(UserInSubject.editor is True)
+        .filter(UserInSubject.editor == True)
         .all()
     )
     viewers = (
-        User.query.filter(User.id == UserInSubject.user_id)
-        .filter(UserInSubject.subject_id == Subject.id)
+        User.query.join(UserInSubject)
+        .join(Subject)
         .filter(Subject.id == subject_id)
-        .filter(UserInSubject.editor is False)
+        .filter(UserInSubject.editor == False)
         .all()
     )
     return render_template(
@@ -198,7 +210,7 @@ def post_usertosubject(subject_id):
         email = request.form.get("email")
         user_role = request.form.get("userrole")
         user = User.query.filter(User.email == email).first()
-        editor = (user_role == "editor")
+        editor = user_role == "editor"
         if user != None:
             user_in_subject = UserInSubject(
                 user_id=user.id, subject_id=subject_id, editor=editor
@@ -212,6 +224,7 @@ def post_usertosubject(subject_id):
 @login_required
 def delete_subject(subject_id):
     subject = Subject.query.filter(Subject.id == subject_id).first()
-    db.session.delete(subject)
-    db.session.commit()
+    if current_user.id == subject.owner_user_id:
+        db.session.delete(subject)
+        db.session.commit()
     return redirect(url_for("subjects.all_subjects"))

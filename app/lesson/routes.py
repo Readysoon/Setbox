@@ -31,6 +31,7 @@ def lesson_page(lesson_id):
     files_in_lesson = (
         File.query.filter(File.lesson_id == Lesson.id)
         .filter(Lesson.id == lesson_id)
+        .order_by(File.id.desc())
         .all()
     )
     return render_template("lesson/lesson.html", lesson=lesson, files=files_in_lesson)
@@ -42,7 +43,7 @@ def change_lesson_name(lesson_id):
     lesson = Lesson.query.filter(Lesson.id == lesson_id).first()
     lesson.name = request.form.get("lessonname")
     db.session.commit()
-    return redirect(url_for("lesson.lesson", lesson_id=lesson_id))
+    return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
 @blueprint.route("/upload/<lesson_id>", methods=["POST"])
@@ -62,7 +63,7 @@ def upload(lesson_id):
     file_to_db = File(filename=filename, name=name, lesson_id=lesson_id, type=file_type)
     db.session.add(file_to_db)
     db.session.commit()
-    return redirect(url_for("lesson.lesson", lesson_id=lesson_id))
+    return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
 def get_file_type(filename):
@@ -82,7 +83,7 @@ def delete(file_id):
     os.remove("./files/" + file.filename)
     db.session.delete(file)
     db.session.commit()
-    return redirect(url_for("lesson.lesson", lesson_id=lesson_id))
+    return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
 @blueprint.route("/done/<file_id>")
@@ -91,7 +92,7 @@ def done(file_id):
     file = File.query.filter(File.id == file_id).first()
     file.reviewed = True
     db.session.commit()
-    return redirect(url_for("lesson.lesson", lesson_id=file.lesson_id))
+    return redirect(url_for("lesson.lesson_page", lesson_id=file.lesson_id))
 
 
 @blueprint.route("/files/<filename>", methods=["GET"])
@@ -106,7 +107,7 @@ def download(filename):
 @login_required
 def addlesson():
     subjects = (
-        Subject.query.join(UserInSubject)
+        Subject.query.join(UserInSubject, isouter=True)
         .filter(
             or_(
                 Subject.owner_user_id == current_user.id,
@@ -149,7 +150,7 @@ def addlesson_post():
     ):
         db.session.add(lesson)
         db.session.commit()
-    return redirect(url_for("lesson.lesson", lesson_id=lesson.id))
+    return redirect(url_for("lesson.lesson_page", lesson_id=lesson.id))
 
 
 @blueprint.post("/delete_lesson/<lesson_id>")
@@ -159,4 +160,4 @@ def delete_lesson(lesson_id):
     subject_id = lesson.subject_id
     db.session.delete(lesson)
     db.session.commit()
-    return redirect(url_for("subjects.subject", subject_id=subject_id))
+    return redirect(url_for("subjects.subject_page", subject_id=subject_id))
