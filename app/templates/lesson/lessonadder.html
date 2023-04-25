@@ -13,7 +13,7 @@
             <th>
                 <form method="post">
                     <div class="subjectselector">
-                        <select name="subjects" id="subjects">
+                        <select name="subjects" id="subjects" required>
                             {% for subject in subjects %}
                                 <option value="{{ subject.id }}">{{ subject.name }}</option>
                             {% endfor %} 
@@ -25,7 +25,7 @@
             <th>Date</th>
             <th>
                 <div class="dateselector">
-                    <input type="date" id="lesson_date" name="lesson_date">
+                    <input type="date" id="lesson_date" name="lesson_date" required>
                 </div>
             </th>
         </tr>
@@ -33,7 +33,7 @@
             <th>Start Time</th>
             <th>
                 <div class="timeselector">
-                    <input type="time" id="start_time" name="start_time">
+                    <input type="time" id="start_time" name="start_time" required>
                 </div>
             </th>
         </tr>
@@ -41,7 +41,7 @@
             <th>End Time</th>
             <th>
                 <div class="timeselector">
-                    <input type="time" id="end_time" name="end_time">
+                    <input type="time" id="end_time" name="end_time" required>
                 </div>
             </th>
         </tr>
