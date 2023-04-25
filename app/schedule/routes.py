@@ -29,8 +29,6 @@ def schedule_post_date():
 @blueprint.route("/schedule/<date_string>")
 @login_required
 def create_schedule(date_string):
-    # lists that will be used for storing data
-    all_lessons_list = []
 
     given_date = datetime.strptime(date_string, "%Y-%m-%d")
 

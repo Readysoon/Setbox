@@ -110,57 +110,51 @@ def addsubject():
 @login_required
 def add_subject_func():
     subject_name = request.form.get("subject_name")
-    subject = Subject(name=subject_name, owner_user_id=current_user.id)
-    db.session.add(subject)
-    db.session.commit()
     start_date_str = request.form.get("start_date")
     start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
     selection = request.form.get("frequency")
     start_time = request.form.get("start_time")
     end_time = request.form.get("end_time")
+    subject_id = create_subject_return_id(subject_name, current_user.id)
+    if selection == "1x":
+        add_lesson(subject_id, start_date, start_time, end_time)
+    else:
+        end_date_str = request.form.get("end_date")
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
+        if selection == "every_7_days":
+            how_frequent = 7
+        elif selection == "every_30_days":
+            how_frequent = 30
+        add_lessons_every_x_days(subject_id, start_date, end_date, start_time, end_time, how_frequent)
+    db.session.commit()
+    return redirect(url_for("subjects.all_subjects"))
+
+def create_subject_return_id(subject_name, user_id):
+    subject = Subject(name=subject_name, owner_user_id=user_id)
+    db.session.add(subject)
+    db.session.commit()
     subject_id = (
         Subject.query.filter(Subject.name == subject_name)
-        .filter(Subject.owner_user_id == current_user.id)
+        .filter(Subject.owner_user_id == user_id)
         .first()
         .id
     )
-    if selection == "1x":
-        lesson = Lesson(
-            subject_id=subject_id,
-            date=start_date,
-            start_time=start_time,
-            end_time=end_time,
-        )
-        db.session.add(lesson)
-    elif selection == "weekly":
-        end_date_str = request.form.get("end_date")
-        end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
-        delta = end_date - start_date
-        for days in range(0, delta.days + 1, 7):
-            date = start_date + timedelta(days=days)
-            lesson = Lesson(
-                subject_id=subject_id,
-                date=date,
-                start_time=start_time,
-                end_time=end_time,
-            )
-            db.session.add(lesson)
-    elif selection == "monthly":
-        end_date_str = request.form.get("end_date")
-        end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
-        delta = end_date - start_date
-        for days in range(delta.days + 1):
-            date = start_date + timedelta(days=days)
-            if date.strftime("%-d") == start_date.strftime("%-d"):
-                lesson = Lesson(
-                    subject_id=subject_id,
-                    date=date,
-                    start_time=start_time,
-                    end_time=end_time,
-                )
-                db.session.add(lesson)
-    db.session.commit()
-    return redirect(url_for("subjects.all_subjects"))
+    return subject_id
+
+def add_lesson(subject_id, date, start_time, end_time):
+    lesson = Lesson(
+        subject_id=subject_id,
+        date=date,
+        start_time=start_time,
+        end_time=end_time,
+    )
+    db.session.add(lesson)
+
+def add_lessons_every_x_days(subject_id, start_date, end_date, start_time, end_time, x_days):
+    delta = end_date - start_date
+    for days in range(0, delta.days + 1, x_days):
+        date = start_date + timedelta(days=days)
+        add_lesson(subject_id, date, start_time, end_time)
 
 
 @blueprint.get("/addusertosubject/<subject_id>")
@@ -204,10 +198,11 @@ def post_usertosubject(subject_id):
         email = request.form.get("email")
         user_role = request.form.get("userrole")
         user = User.query.filter(User.email == email).first()
-        editor = user_role == "editor"
-        user_in_subject = UserInSubject(
-            user_id=user.id, subject_id=subject_id, editor=editor
-        )
+        editor = (user_role == "editor")
+        if user != None:
+            user_in_subject = UserInSubject(
+                user_id=user.id, subject_id=subject_id, editor=editor
+            )
     db.session.add(user_in_subject)
     db.session.commit()
     return redirect(url_for("subjects.addusertosubject", subject_id=subject_id))
