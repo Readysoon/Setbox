@@ -12,31 +12,31 @@
         <th>Subject Name</th>
         <th>
             <form method="post">
-                <input type="text" id="subject_name" name="subject_name">
+                <input type="text" id="subject_name" name="subject_name" required>
         </th>
     </tr>
     <tr>
         <th>Start Date</th>
         <th>
-                <input type="date" id="start_date" name="start_date">
+                <input type="date" id="start_date" name="start_date" required>
         </th>
     </tr>
     <tr>
         <th>Lesson Start Time</th>
         <th>
-            <input type="time" id="start_time" name="start_time">
+            <input type="time" id="start_time" name="start_time" required>
         </th>
     </tr>
     <tr>
         <th>Lesson End Time</th>
         <th>
-            <input type="time" id="end_time" name="end_time">
+            <input type="time" id="end_time" name="end_time" required>
         </th>
     </tr>
     <tr>
         <th>Frequency</th>
         <th>
-                <select name="frequency" id="frequency" onchange="checkIfOnce(this);">
+                <select name="frequency" id="frequency" required>
                     <option value="1x">1x</option>
                     <option value="every_7_days">Every 7 days</option>
                     <option value="every_30_days">Every 30 days</option>
@@ -46,7 +46,7 @@
     <tr>
         <th>End Date</th>
         <th>
-            <input type="date" id="end_date" name="end_date">
+            <input type="date" id="end_date" name="end_date" required>
         </th>
     </tr>
     <tr>
