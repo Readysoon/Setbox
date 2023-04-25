@@ -5,7 +5,7 @@
 {% endblock head %}
 
 {% block main %}
-    <button class="button"><a href={{ url_for('add_subject_func') }}>Add a subject</a></button>
+    <button class="button"><a href={{ url_for('subjects.add_subject_func') }}>Add a subject</a></button>
     <h1>Subjects</h1>
     <br><br>
     <h3>Mine</h3>
@@ -14,7 +14,7 @@
             <div class="button-row">
                 {% for subject in subjects[i:i+3] %}
                     <button>
-                        <a href={{ url_for('subject_page', subject_id = subject.id) }}>{{ subject.name }}</a>
+                        <a href={{ url_for('subjects.subject_page', subject_id = subject.id) }}>{{ subject.name }}</a>
                     </button>
                 {% endfor %}
             </div>
