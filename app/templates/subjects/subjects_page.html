@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/subjects_page.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subjects_page.css') }}">
+{% endblock head %}
 
 {% block main %}
-    <button class="button"><a href="/add_subject">Add a subject</a></button>
+    <button class="button"><a href={{ url_for('add_subject_func') }}>Add a subject</a></button>
     <h1>Subjects</h1>
     <br><br>
     <h3>Mine</h3>
@@ -14,7 +14,7 @@
             <div class="button-row">
                 {% for subject in subjects[i:i+3] %}
                     <button>
-                        <a href="/subject/{{ subject.id }}">{{ subject.name }}</a>
+                        <a href={{ url_for('subject_page', subject_id = subject.id) }}>{{ subject.name }}</a>
                     </button>
                 {% endfor %}
             </div>
@@ -26,10 +26,10 @@
             <div class="button-row">
                 {% for subject in shared_subjects[i:i+3] %}
                     <button>
-                        <a href="/subject/{{ subject.id }}">{{ subject.name }}</a>
+                        <a href={{ url_for('subject_page', subject_id = subject.id) }}>{{ subject.name }}</a>
                     </button>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
-{% endblock %}
+{% endblock main %}

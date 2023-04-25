@@ -1,13 +1,13 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/addusertosubject.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/addusertosubject.css') }}">
+{% endblock head %}
 
 {% block main %}
 <h2>{{ subject_names.name }}</h2>
 <div class="button-container">
-    <button><a href="/subject/{{ subject_id }}">Back</a></button>
+    <button><a href={{ url_for('subjects.subject_page', subject_id=subject_id) }}>Back</a></button>
 </div>
 <table>
     <tr>
@@ -31,7 +31,7 @@
             {% endfor %}</td>
     </tr>
 </table>
-<form method="POST">
+<form method="post">
     <label>Add a user: </label>
     <label for="email">E-mail</label>
     <input type="email" id="email" name="email" required/>
@@ -42,4 +42,4 @@
     </select>
     <button type="submit">Add</button>
 </form>
-{% endblock %}
+{% endblock main %}

@@ -5,7 +5,7 @@
 {% endblock head %}
 
 {% block main %}
-<button><a href={{ url_for("subjects.subject", subject_id = lesson.Subject.id) }} class="back-to-subject">Back to subject</a></button>
+<button><a href={{ url_for("subjects.subject_page", subject_id = lesson.Subject.id) }} class="back-to-subject">Back to subject</a></button>
 {% if lesson.Lesson.name == None %}
     <h2>{{ lesson.Subject.name }} - {{ lesson.Lesson.formatted_date }}</h2>
 {% else %}

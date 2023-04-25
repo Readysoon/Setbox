@@ -1,13 +1,12 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/schedule.css')}}"/>
-{% endblock %}
-
+<link rel="stylesheet" href={{ url_for('static', filename='css/schedule.css') }}/>
+{% endblock head %}
 
 {% block main %}
-<p>Switch to a different week: <form method="POST" action="/schedule"><input type="date" id="date" name="date"><button>Submit</button></form></p> 
-<a href="/lessonadder" class="add-lesson">Add a lesson</a>
+<p>Switch to a different week: <form method="post" action={{ url_for('schedule.schedule_no_date') }}><input type="date" id="date" name="date"/><button>Submit</button></form></p> 
+<a href={{ url_for('lesson.addlesson') }} class="add-lesson">Add a lesson</a>
 <table>
     <tr>
         <td></td>
@@ -23,9 +22,9 @@
             {% for lesson in lessons %}
             {% if lesson.Lesson.formatted_date == date and lesson.Lesson.start_time <= time and lesson.Lesson.end_time > time %} 
                 {% if lesson.Lesson.name != None %}
-                    <a href="/lesson/{{ lesson.Lesson.id }}">{{ lesson.Lesson.name }}</a>
+                    <a href={{ url_for('lesson.lesson_page', lesson_id = lesson.Lesson.id) }}>{{ lesson.Lesson.name }}</a>
                 {% else %}
-                    <a href="/lesson/{{ lesson.Lesson.id }}">{{ lesson.Subject.name }}</a>
+                    <a href={{ url_for('lesson.lesson_page', lesson_id = lesson.Lesson.id) }}>{{ lesson.Subject.name }}</a>
                 {% endif %}
             {% endif %}
             {% endfor %}
@@ -34,4 +33,4 @@
     </tr>
     {% endfor %}
 </table>
-{% endblock %}
+{% endblock main %}

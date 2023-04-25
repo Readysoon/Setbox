@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/lessonadder.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lessonadder.css') }}">
+{% endblock head %}
 
 {% block main %}
 <div class="container">
@@ -11,11 +11,11 @@
         <tr>
             <th>Subject</th>
             <th>
-                <form method="POST">
-                    <div class ="subjectselector">
+                <form method="post">
+                    <div class="subjectselector">
                         <select name="subjects" id="subjects">
                             {% for subject in subjects %}
-                                <option value="{{ subject.id }}">{{ subject.name }}</a>
+                                <option value="{{ subject.id }}">{{ subject.name }}</option>
                             {% endfor %} 
                         </select>
                     </div>
@@ -24,7 +24,7 @@
         <tr>
             <th>Date</th>
             <th>
-                <div class ="dateselector">
+                <div class="dateselector">
                     <input type="date" id="lesson_date" name="lesson_date">
                 </div>
             </th>
@@ -32,7 +32,7 @@
         <tr>
             <th>Start Time</th>
             <th>
-                <div class ="timeselector">
+                <div class="timeselector">
                     <input type="time" id="start_time" name="start_time">
                 </div>
             </th>
@@ -40,7 +40,7 @@
         <tr>
             <th>End Time</th>
             <th>
-                <div class ="timeselector">
+                <div class="timeselector">
                     <input type="time" id="end_time" name="end_time">
                 </div>
             </th>
@@ -48,11 +48,11 @@
         <tr>
             <th>Lesson Name</th>
             <th>
-                <div class ="nameinput">
+                <div class="nameinput">
                     <input type="text" id="lesson_name" name="lesson_name"><br>
                 </div>
             </th>
-        <tr/>
+        </tr>
         <tr>
             <th></th>
             <th>
@@ -62,4 +62,4 @@
         </tr>
     </table>
 </div>
-{% endblock %}
+{% endblock main %}

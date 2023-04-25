@@ -1,10 +1,14 @@
-{% extends 'base.html' %} 
+{% extends "base.html" %} 
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/user_forms.css')}}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_forms.css') }}">
+{% endblock head %}
 
 {% block main %}
+
+{% if error %}
+  <p class="error">{{ error }}</p>
+{% endif %}
 
 <form method="post">
 
@@ -12,10 +16,10 @@
   <input type="email" id="email" name="email" required/>
 
   <label for="password">Password</label>
-  <input type="password" maxlength="40" minlength="8" id="password" name="password" required/>
+  <input type="password" maxlength="40" minlength="6" id="password" name="password" required/>
 
   <button type="submit">Login</button>
   
 </form>
 
-{% endblock %}
+{% endblock main %}
