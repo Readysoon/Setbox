@@ -89,7 +89,7 @@ To run tests, use this command:
 
 ## Database
 
-##### Entity Relationship Diagram
+#### Entity Relationship Diagram
 
 ```mermaid
     erDiagram
@@ -99,7 +99,7 @@ To run tests, use this command:
 ```
 users collection and subjects collection have a many-to-many relationship through a table users_in_subjects
 
-##### Table Definitions
+#### Table Definitions
 
 1. users collection has columns - "id", "email", "password", and "first_name"
 2. subjects collection has columns - "id", "name", and "owner_user_id"
@@ -107,7 +107,7 @@ users collection and subjects collection have a many-to-many relationship throug
 4. diles collection has columns - "id", "name", "type", "filename", "lesson_id", and "reviewed"
 5. users_in_subjects collection has columns - "user_id", "subject_id", and "editor"
 
-##### Indexes
+#### Indexes
 1. Primary Key Index on "id" column for all collections.
 2. Unique Constraint Index on "email" column for users collection.
 3. Unique Constraint Index on "name" and "owner_user_id" columns for subjects collection.
