@@ -51,9 +51,8 @@ python 3.9.12, PostgreSQL 15.2
         pip install -r requirements.txt
 
 
-5. Create databases for setbox and setbox_test
+5. Create databases for setbox and setbox_test (Run these commands in your PostgreSQl terminal)
     
-Run these commands in your PostgreSQl terminal:
         CREATE DATABASE setbox;
         CREATE DATABASE setbox_test;
 
