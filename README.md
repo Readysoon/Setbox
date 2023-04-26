@@ -1,5 +1,15 @@
 # SetBox - the website for learning
 
+SetBox is a place to plan your schedule with the use of subjects and lessons. It is also a place to track your learning progress and prepare for exams.
+
+## What can you do in SetBox?
+
+1. Make a profile to store your data
+2. Create a subject, specify when the lessons are happening
+3. Create lessons that are outside of specified subject times
+4. Add files to learn from
+5. Share a subject with other students (work in progress, some features not working properly)
+6. Add quizzes for lessons to test your knowledge (not yet implemented)
 
 
 ### Prerequisites
@@ -20,57 +30,62 @@ python 3.9.12, PostgreSQL 15.2
 
 2. Create a virtual environment
 
-    `python -m venv venv`
+        python -m venv venv
 
 
 3. Enable the virtual environment
 
     For macOS bash or zsh:
 
-        `source venv/bin/activate`
+        source venv/bin/activate
 
     For Windows cmd:
 
-        `venv\Scripts\activate.bat`
+        venv\Scripts\activate.bat
 
     [Learn more about virtual environments here](https://docs.python.org/3/library/venv.html)
 
 
 4. Install requirements in virtual environment
 
-        `pip install -r requirements.txt`
+        pip install -r requirements.txt
 
 
 5. Create databases for setbox and setbox_test
     
-        Run these commands in your PostgreSQl:
-        `CREATE DATABASE setbox;
-         CREATE DATABASE setbox_test;`
+    Run these commands in your PostgreSQl:
+        CREATE DATABASE setbox;
+        CREATE DATABASE setbox_test;
 
 
 6. Create a copy of .env.template as .env and fill in the project environment variables
 
-        `FLASK_DEBUG=set to True or False
+        FLASK_DEBUG=set to True or False
         DATABASE_URL=postgresql://username:password@localhost:5432/setbox (change username and password to your database data)
         TESTING_DATABASE_URL=postgresql://username:password@localhost:5432/setbox_test (change username and password to your database data)
         FLASK_APP=run.py
-        SECRET_KEY=generate a random secret key`
+        SECRET_KEY=generate a random secret key
         
         
 7. Run upgrade command to generate database tables
 
-        `flask db upgrade`
+        flask db upgrade
 
 
 8. Create empty directory for storing files
 
-        `mkdir files`
+        mkdir files
         
         
 9. Run the app to see if it is working
 
-        `python run.py`
+        python run.py
 
 
+### Testing
+
+To run tests, use this command:
+
+        pytest -v
 
 Something is not working? Contact @edvardsmazprecnieks .

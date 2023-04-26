@@ -157,7 +157,6 @@ def add_lesson(subject_id, date, start_time, end_time):
         end_time=end_time,
     )
     db.session.add(lesson)
-    db.session.commit()
 
 
 def add_lessons_every_x_days(
