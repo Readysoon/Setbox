@@ -53,9 +53,9 @@ python 3.9.12, PostgreSQL 15.2
 
 5. Create databases for setbox and setbox_test
     
-    Run these commands in your PostgreSQl:
-            CREATE DATABASE setbox;
-            CREATE DATABASE setbox_test;
+Run these commands in your PostgreSQl terminal:
+        CREATE DATABASE setbox;
+        CREATE DATABASE setbox_test;
 
 
 6. Create a copy of .env.template as .env and fill in the project environment variables
