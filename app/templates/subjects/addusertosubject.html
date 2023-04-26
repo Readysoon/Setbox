@@ -5,9 +5,9 @@
 {% endblock head %}
 
 {% block main %}
-<h2>{{ subject_names.name }}</h2>
+<h2>{{ subject.name }}</h2>
 <div class="button-container">
-    <button><a href={{ url_for('subjects.subject_page', subject_id=subject_id) }}>Back</a></button>
+    <button><a href={{ url_for('subjects.subject_page', subject_id=subject.id) }}>Back</a></button>
 </div>
 <table>
     <tr>

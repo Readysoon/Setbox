@@ -20,8 +20,8 @@
         {% for date in weekdates %}
         <td>
             {% for lesson in lessons %}
-            {% if lesson.Lesson.formatted_date == date and lesson.Lesson.start_time <= time and lesson.Lesson.end_time > time %} 
-                {% if lesson.Lesson.name != None %}
+            {% if lesson.Lesson.formatted_date == date and lesson.Lesson.start_time <= time and lesson.Lesson.end_time > time %}
+                {% if lesson.Lesson.name != "" and lesson.Lesson.name != None %}
                     <a href={{ url_for('lesson.lesson_page', lesson_id = lesson.Lesson.id) }}>{{ lesson.Lesson.name }}</a>
                 {% else %}
                     <a href={{ url_for('lesson.lesson_page', lesson_id = lesson.Lesson.id) }}>{{ lesson.Subject.name }}</a>

@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -11,38 +10,29 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
-from sqlalchemy.sql.expression import and_, or_
 import filetype
-from app.extensions.database.database import db
-from app.extensions.database.models import Subject, Lesson, File, User, UserInSubject
+from app.subjects.controllers import SubjectController
+from app.lesson.controllers import LessonController
 
 blueprint = Blueprint("lesson", __name__)
+lesson_controller = LessonController()
+subject_controller = SubjectController()
 
 
 @blueprint.get("/lesson/<lesson_id>")
 @login_required
 def lesson_page(lesson_id):
-    lesson = (
-        db.session.query(Lesson, Subject)
-        .filter(Subject.id == Lesson.subject_id)
-        .filter(Lesson.id == lesson_id)
-        .first()
+    return render_template(
+        "lesson/lesson.html",
+        lesson=lesson_controller.get_lesson_and_subject_by_lesson_id(lesson_id),
+        files=lesson_controller.get_files_in_lesson(lesson_id),
     )
-    files_in_lesson = (
-        File.query.filter(File.lesson_id == Lesson.id)
-        .filter(Lesson.id == lesson_id)
-        .order_by(File.id.desc())
-        .all()
-    )
-    return render_template("lesson/lesson.html", lesson=lesson, files=files_in_lesson)
 
 
 @blueprint.post("/lesson/<lesson_id>")
 @login_required
 def change_lesson_name(lesson_id):
-    lesson = Lesson.query.filter(Lesson.id == lesson_id).first()
-    lesson.name = request.form.get("lessonname")
-    db.session.commit()
+    lesson_controller.change_lesson_name(lesson_id, request.form.get("lessonname"))
     return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
@@ -60,9 +50,7 @@ def upload(lesson_id):
     )
     file.save("./files/" + filename)
     file_type = get_file_type(filename)
-    file_to_db = File(filename=filename, name=name, lesson_id=lesson_id, type=file_type)
-    db.session.add(file_to_db)
-    db.session.commit()
+    lesson_controller.add_file_to_db(name, lesson_id, filename, file_type)
     return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
@@ -78,48 +66,33 @@ def get_file_type(filename):
 @blueprint.route("/delete/<file_id>")
 @login_required
 def delete(file_id):
-    file = File.query.filter(File.id == file_id).first()
-    lesson_id = file.lesson_id
-    os.remove("./files/" + file.filename)
-    db.session.delete(file)
-    db.session.commit()
+    lesson_id = lesson_controller.get_lesson_id_from_file_id(file_id)
+    lesson_controller.delete_file(file_id)
     return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
 @blueprint.route("/done/<file_id>")
 @login_required
 def done(file_id):
-    file = File.query.filter(File.id == file_id).first()
-    file.reviewed = True
-    db.session.commit()
-    return redirect(url_for("lesson.lesson_page", lesson_id=file.lesson_id))
+    lesson_id = lesson_controller.get_file_by_file_id(file_id).lesson_id
+    lesson_controller.change_file_to_done(file_id)
+    return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 
 @blueprint.route("/files/<filename>", methods=["GET"])
 @login_required
 def download(filename):
     file_path = "../files/" + filename
-    response = make_response(send_file(file_path))
-    return response
+    return make_response(send_file(file_path))
 
 
 @blueprint.get("/lessonadder")
 @login_required
 def addlesson():
-    subjects = (
-        Subject.query.join(UserInSubject, isouter=True)
-        .filter(
-            or_(
-                Subject.owner_user_id == current_user.id,
-                and_(
-                    UserInSubject.user_id == current_user.id,
-                    UserInSubject.editor is True,
-                ),
-            )
-        )
-        .all()
+    return render_template(
+        "lesson/lessonadder.html",
+        subjects=subject_controller.find_all_subjects_owned_or_editor(current_user.id),
     )
-    return render_template("lesson/lessonadder.html", subjects=subjects)
 
 
 @blueprint.post("/lessonadder")
@@ -130,34 +103,17 @@ def addlesson_post():
     date = request.form["lesson_date"]
     start_time = request.form["start_time"]
     end_time = request.form["end_time"]
-    lesson = Lesson(
-        subject_id=subject_id,
-        date=date,
-        start_time=start_time,
-        end_time=end_time,
-        name=name,
-    )
-    subject = Subject.query.filter(Subject.id == subject_id).first()
-    user_in_subject = (
-        UserInSubject.query.filter(Subject.id == subject_id)
-        .filter(User.id == current_user.id)
-        .first()
-    )
-    if (
-        subject.owner_user_id == current_user.id
-        or user_in_subject is not None
-        and user_in_subject.editor is True
-    ):
-        db.session.add(lesson)
-        db.session.commit()
+    if subject_controller.check_if_user_is_owner_or_editor(subject_id, current_user.id):
+        lesson = lesson_controller.create_lesson(
+            subject_id, date, start_time, end_time, name
+        )
     return redirect(url_for("lesson.lesson_page", lesson_id=lesson.id))
 
 
 @blueprint.post("/delete_lesson/<lesson_id>")
 @login_required
 def delete_lesson(lesson_id):
-    lesson = Lesson.query.filter(Lesson.id == lesson_id).first()
+    lesson = lesson_controller.get_lesson_by_lesson_id(lesson_id)
     subject_id = lesson.subject_id
-    db.session.delete(lesson)
-    db.session.commit()
+    lesson_controller.delete_lesson(lesson)
     return redirect(url_for("subjects.subject_page", subject_id=subject_id))
