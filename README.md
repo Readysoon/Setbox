@@ -93,7 +93,7 @@ To run tests, use this command:
 
 ```mermaid
     erDiagram
-        users }o--o{ subjects : "belongs to"
+        users }o--o{ subjects : "assigned to"
         subjects ||--o{ lessons : "has"
         lessons ||--o{ files : "contains"
 ```
