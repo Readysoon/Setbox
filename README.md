@@ -89,7 +89,7 @@ To run tests, use this command:
 
 ## Database
 
-#### Entity Relationship Diagram
+#### Entity Relationship Diagrams
 
 ```mermaid
     erDiagram
@@ -99,13 +99,7 @@ To run tests, use this command:
 ```
 users collection and subjects collection have a many-to-many relationship through a table users_in_subjects
 
-#### Table Definitions
-
-1. users collection has columns - "id", "email", "password", and "first_name"
-2. subjects collection has columns - "id", "name", and "owner_user_id"
-3. lessons collection has columns - "id", "subject_id", "date", "formatted_date", "start_time", "end_time", and "name"
-4. files collection has columns - "id", "name", "type", "filename", "lesson_id", and "reviewed"
-5. users_in_subjects collection has columns - "user_id", "subject_id", and "editor"
+![ERD](https://github.com/Readysoon/Setbox/blob/main/app/extensions/database/image/ERD.png?raw=true)
 
 #### Indexes
 1. Primary Key Index on "id" column for all collections.
