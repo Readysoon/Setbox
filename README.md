@@ -87,4 +87,29 @@ To run tests, use this command:
 
         pytest -v
 
+## Database
+
+##### Entity Relationship Diagram
+
+```mermaid
+    erDiagram
+        users }o--o{ subjects : "belongs to"
+        subjects ||--o{ lessons : "has"
+        lessons ||--o{ files : "contains"
+```
+users collection and subjects collection have a many-to-many relationship through a table users_in_subjects
+
+##### Table Definitions
+
+1. users collection has columns - "id", "email", "password", and "first_name"
+2. subjects collection has columns - "id", "name", and "owner_user_id"
+3. lessons collection has columns - "id", "subject_id", "date", "formatted_date", "start_time", "end_time", and "name"
+4. diles collection has columns - "id", "name", "type", "filename", "lesson_id", and "reviewed"
+5. users_in_subjects collection has columns - "user_id", "subject_id", and "editor"
+
+##### Indexes
+1. Primary Key Index on "id" column for all collections.
+2. Unique Constraint Index on "email" column for users collection.
+3. Unique Constraint Index on "name" and "owner_user_id" columns for subjects collection.
+
 Something is not working? Contact @edvardsmazprecnieks .
