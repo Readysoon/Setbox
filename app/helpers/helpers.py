@@ -40,5 +40,5 @@ class Helpers:
             file_type = kind.mime
         return file_type
 
-    def make_string_into_date(date_string):
+    def make_string_into_date(self, date_string):
         return datetime.strptime(date_string, "%Y-%m-%d")
