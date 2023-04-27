@@ -10,13 +10,15 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
-import filetype
+
 from app.subjects.controllers import SubjectController
 from app.lesson.controllers import LessonController
+from app.helpers.helpers import Helpers
 
 blueprint = Blueprint("lesson", __name__)
 lesson_controller = LessonController()
 subject_controller = SubjectController()
+helpers = Helpers()
 
 
 @blueprint.get("/lesson/<lesson_id>")
@@ -49,18 +51,9 @@ def upload(lesson_id):
         + secure_filename(file.filename)
     )
     file.save("./files/" + filename)
-    file_type = get_file_type(filename)
+    file_type = helpers.get_file_type(filename)
     lesson_controller.add_file_to_db(name, lesson_id, filename, file_type)
     return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
-
-
-def get_file_type(filename):
-    kind = filetype.guess("./files/" + filename)
-    if kind is None:
-        file_type = "Other"
-    else:
-        file_type = kind.mime
-    return file_type
 
 
 @blueprint.route("/delete/<file_id>")

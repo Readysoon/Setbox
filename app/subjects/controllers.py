@@ -1,7 +1,7 @@
 from sqlalchemy import func, case
+from sqlalchemy.sql.expression import and_, or_
 from app.extensions.database.database import db
 from app.extensions.database.models import Subject, User, UserInSubject, File, Lesson
-from sqlalchemy.sql.expression import and_, or_
 
 
 class SubjectController:
@@ -91,7 +91,7 @@ class SubjectController:
         lessons = (
             db.session.query(
                 (self.calculate_percentage_with_files()).label("progress"),
-                func.count(File.reviewed == True).label("files"),
+                func.count(File.reviewed is True).label("files"),
                 Lesson,
             )
             .join(Lesson, full=True)
@@ -117,7 +117,7 @@ class SubjectController:
             )
             .all()
         )
-    
+
     def check_if_user_is_owner_or_editor(self, subject_id, user_id):
         subject = self.get_subject_by_id(subject_id)
         if subject.owner_user_id == user_id:

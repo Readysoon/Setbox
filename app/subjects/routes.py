@@ -1,16 +1,19 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from app.extensions.database.database import db
 from app.subjects.controllers import SubjectController
 from app.lesson.controllers import LessonController
 from app.user.controllers import UserController
+from app.helpers.helpers import Helpers
 
 blueprint = Blueprint("subjects", __name__)
 
 subject_controller = SubjectController()
 lesson_controller = LessonController()
 user_controller = UserController()
+
+helpers = Helpers()
 
 
 @blueprint.route("/subject")
@@ -51,8 +54,8 @@ def addsubject():
 @login_required
 def add_subject_func():
     subject_name = request.form.get("subject_name")
-    start_date = make_string_into_date(request.form.get("start_date"))
-    end_date = make_string_into_date(request.form.get("end_date"))
+    start_date = helpers.make_string_into_date(request.form.get("start_date"))
+    end_date = helpers.make_string_into_date(request.form.get("end_date"))
     selection = request.form.get("frequency")
     start_time = request.form.get("start_time")
     end_time = request.form.get("end_time")
@@ -66,10 +69,6 @@ def add_subject_func():
             lesson_controller.create_lesson(subject.id, date, start_time, end_time)
     db.session.commit()
     return redirect(url_for("subjects.all_subjects"))
-
-
-def make_string_into_date(date_string):
-    return datetime.strptime(date_string, "%Y-%m-%d")
 
 
 @blueprint.get("/addusertosubject/<subject_id>")
@@ -94,7 +93,7 @@ def post_usertosubject(subject_id):
         user = user_controller.get_user_by_email(email)
         editor = user_role == "editor"
         if user.id != current_user.id:
-            if user != None:
+            if user is not None:
                 user_controller.add_user_in_subject(user.id, subject.id, editor)
     return redirect(url_for("subjects.addusertosubject", subject_id=subject_id))
 
