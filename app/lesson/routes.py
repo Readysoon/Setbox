@@ -51,8 +51,7 @@ def upload(lesson_id):
         + secure_filename(file.filename)
     )
     file.save("./files/" + filename)
-    file_type = helpers.get_file_type(filename)
-    lesson_controller.add_file_to_db(name, lesson_id, filename, file_type)
+    lesson_controller.add_file_to_db(name, lesson_id, filename)
     return redirect(url_for("lesson.lesson_page", lesson_id=lesson_id))
 
 

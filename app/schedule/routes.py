@@ -1,14 +1,13 @@
 from datetime import datetime
 from flask import Blueprint, render_template, redirect, request, url_for
 from flask_login import login_required, current_user
-from sqlalchemy.sql.expression import and_
-from app.extensions.database.models import Lesson, Subject, UserInSubject
-from app.extensions.database.database import db
 from app.helpers.helpers import Helpers
+from app.lesson.controllers import LessonController
 
 blueprint = Blueprint("schedule", __name__)
 
 helpers = Helpers()
+lesson_controller = LessonController()
 
 
 @blueprint.get("/schedule/")
@@ -38,19 +37,8 @@ def create_schedule(date_string):
     first_day_of_week = datetime.strptime(week_days_list[0], "%d.%m.%Y")
     last_day_of_week = datetime.strptime(week_days_list[6], "%d.%m.%Y")
 
-    all_lessons_list = (
-        db.session.query(Lesson, Subject)
-        .filter(
-            and_(Lesson.date >= first_day_of_week), (Lesson.date <= last_day_of_week)
-        )
-        .join(Subject)
-        .join(UserInSubject, isouter=True)
-        .filter(
-            (Subject.owner_user_id == current_user.id)
-            | (UserInSubject.user_id == current_user.id)
-        )
-        .order_by(Lesson.start_time)
-        .all()
+    all_lessons_list = lesson_controller.get_all_lessons_with_subjects_within_dates(
+        first_day_of_week, last_day_of_week, current_user.id
     )
 
     if all_lessons_list == []:

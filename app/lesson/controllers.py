@@ -1,7 +1,10 @@
 import os
-from app.extensions.database.models import Lesson, Subject, File
+from sqlalchemy.sql.expression import and_
+from app.extensions.database.models import Lesson, Subject, File, UserInSubject
 from app.extensions.database.database import db
+from app.helpers.helpers import Helpers
 
+helpers = Helpers()
 
 class LessonController:
     def create_lesson(self, subject_id, date, start_time, end_time, name=None):
@@ -20,10 +23,13 @@ class LessonController:
         db.session.delete(lesson)
         db.session.commit()
 
-    def add_file_to_db(self, name, lesson_id, filename, file_type):
+    def add_file_to_db(self, name, lesson_id, filename, file_type=None):
+        if file_type == None:
+            file_type=helpers.get_file_type(filename)
         file = File(filename=filename, name=name, lesson_id=lesson_id, type=file_type)
         db.session.add(file)
         db.session.commit()
+        return file
 
     def get_lesson_by_lesson_id(self, lesson_id):
         return Lesson.query.filter(Lesson.id == lesson_id).first()
@@ -67,3 +73,18 @@ class LessonController:
         finally:
             db.session.delete(file)
             db.session.commit()
+
+    def get_all_lessons_with_subjects_within_dates(
+        self, date_from, date_until, user_id
+    ):
+        return (
+            db.session.query(Lesson, Subject)
+            .filter(and_(Lesson.date >= date_from), (Lesson.date <= date_until))
+            .join(Subject)
+            .join(UserInSubject, isouter=True)
+            .filter(
+                (Subject.owner_user_id == user_id) | (UserInSubject.user_id == user_id)
+            )
+            .order_by(Lesson.start_time)
+            .all()
+        )
