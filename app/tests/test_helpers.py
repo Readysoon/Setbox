@@ -1,14 +1,17 @@
+from datetime import date, time
+from unittest.mock import patch
 from app.helpers.helpers import Helpers
-from datetime import datetime, time
 
 helpers = Helpers()
 
 
-def test_make_string_into_date_and_make_a_list_of_week_days():
-    date_string = "2023-04-28"
-    date = helpers.make_string_into_date(date_string)
-    assert date == datetime(2023, 4, 28)
-    test_list = helpers.make_a_list_of_week_days(date)
+def test_make_string_into_date():
+    assert helpers.make_string_into_date("2023-04-28") == date(2023, 4, 28)
+
+
+def test_make_a_list_of_week_days():
+    test_date = date(2023, 4, 26)
+    test_list = helpers.make_a_list_of_week_days(test_date)
     assert test_list == [
         "24.04.2023",
         "25.04.2023",
@@ -60,4 +63,12 @@ def test_make_a_list_of_hours_end_time_before_start_time():
     start_time = time(17, 1, 1)
     end_time = time(15, 1, 59)
     test_list = helpers.make_a_list_of_hours(start_time, end_time)
-    assert test_list == []
+    assert not test_list
+
+
+@patch("app.helpers.helpers.filetype")
+def test_get_file_type(mock_filetype):
+    mock_filetype.guess.return_value.mime = (
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    )
+    assert helpers.get_file_type("test_presentation.pptx") == "presentation"
