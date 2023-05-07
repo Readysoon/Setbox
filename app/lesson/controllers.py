@@ -6,6 +6,7 @@ from app.helpers.helpers import Helpers
 
 helpers = Helpers()
 
+
 class LessonController:
     def create_lesson(self, subject_id, date, start_time, end_time, name=None):
         lesson = Lesson(
@@ -23,9 +24,8 @@ class LessonController:
         db.session.delete(lesson)
         db.session.commit()
 
-    def add_file_to_db(self, name, lesson_id, filename, file_type=None):
-        if file_type == None:
-            file_type=helpers.get_file_type(filename)
+    def add_file_to_db(self, name, lesson_id, filename):
+        file_type = helpers.get_file_type(filename)
         file = File(filename=filename, name=name, lesson_id=lesson_id, type=file_type)
         db.session.add(file)
         db.session.commit()

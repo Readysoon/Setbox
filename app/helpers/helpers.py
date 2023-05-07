@@ -18,7 +18,7 @@ class Helpers:
         return given_time.replace(minute=0, second=0, microsecond=0)
 
     def round_time_to_next_hour(self, given_time):
-        if given_time.replace(hour=0) > time(minute=0):
+        if given_time.replace(hour=0) > time(0, 0, 59):
             return self.round_time(given_time).replace(hour=given_time.hour + 1)
         return self.round_time(given_time)
 
@@ -37,8 +37,11 @@ class Helpers:
         if kind is None:
             file_type = "Other"
         else:
-            file_type = kind.mime
+            list_split = kind.mime.split(".")
+            for a in list_split:
+                b = a.split("/")
+            file_type = b[-1]
         return file_type
 
     def make_string_into_date(self, date_string):
-        return datetime.strptime(date_string, "%Y-%m-%d")
+        return datetime.strptime(date_string, "%Y-%m-%d").date()
