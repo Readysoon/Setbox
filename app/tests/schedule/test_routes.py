@@ -2,6 +2,10 @@ from os import environ
 from datetime import time
 import flask_testing
 from flask_login import FlaskLoginClient
+from AdvancedHTMLParser import AdvancedHTMLParser
+from unittest.mock import patch, Mock
+from sqlalchemy.engine.row import Row
+from werkzeug.security import generate_password_hash
 from app.config import Config
 from app.app import create_app
 from app.extensions.database.models import Lesson, Subject, User
@@ -57,67 +61,76 @@ class TestScheduleRoutesDatabase(flask_testing.TestCase):
         db.session.add(lesson_2)
         db.session.commit()
 
+        parser = AdvancedHTMLParser()
+
         with self.app.test_client(user=user) as client:
             response = client.get("/schedule/2024-04-24")
+
+        parser.parseStr(response.text)
+
+        body_element = parser.body
+        table_element = parser.getElementsByTagName("table")[0]
+
         assert response.status_code == 200
-        assert b"16:00:00" in response.data
-        assert b"17:00:00" in response.data
-        assert b"Test Lesson 1" in response.data
-        assert b"Test Subject" in response.data
+        assert "16:00:00" in body_element.innerHTML
+        assert "17:00:00" in body_element.innerHTML
+        assert "Test Lesson 1" in body_element.innerHTML
+        assert "Test Subject" in body_element.innerHTML
+        assert "None" not in body_element.innerHTML
+        assert "16:00:00" in table_element.innerHTML
+        assert "17:00:00" in table_element.innerHTML
+        assert "Test Subject" in table_element.innerHTML
+        assert "Test Lesson 1" in table_element.innerHTML
 
 
-# class TestScheduleRoutesMock(flask_testing.TestCase):
-#     def config(self):
-#         return Config(testing=True)
 
-#     def create_app(self):
-#         app = create_app(self.config())
-#         return app
+class TestScheduleRoutesMock(flask_testing.TestCase):
+    def config(self):
+        return Config(testing=True)
 
-#     def setUp(self):
-#         self.app = self.create_app()
-#         self.app.test_client_class = FlaskLoginClient
+    def create_app(self):
+        app = create_app(self.config())
+        app.test_client_class = FlaskLoginClient
+        return app
 
-#     @patch("app.schedule.routes.db")
-#     def test_schedule_with_mock(self, mock_db):
-#         mock_user = User(id=1, email="testing_schedule@setbox.de", first_name="Testy")
-#         mock_user.set_password("test_password")
-#         mock_subject = Subject(id=1, name="Test Subject", owner_user_id=1)
-#         mock_row_lesson_1 = Mock(spec=Row)
-#         mock_lesson_1 = Lesson(
-#             subject_id=1,
-#             date="2024-04-24",
-#             start_time=time(16, 00, 00),
-#             end_time=time(17, 00, 00),
-#             name="Test Lesson 1",
-#         )
-#         mock_row_lesson_1.Lesson = mock_lesson_1
-#         mock_row_lesson_1.Lesson.id = 1
-#         mock_row_lesson_1.Lesson.formatted_date = "24.04.2024"
-#         mock_row_lesson_1.Subject = mock_subject
+    @patch("app.schedule.routes.lesson_controller")
+    @patch("app.extensions.authentication.User")
+    def test_schedule_with_mock(self, mock_user, mock_lesson_controller):
+        mock_user = User(
+            id=1,
+            email="test@test.de",
+            password=generate_password_hash("test_password"),
+            first_name="Test",
+        )
+        mock_subject = Mock(spec=Subject)
+        mock_lesson = Mock(spec=Lesson)
+        mock_lesson.name = "Test Lesson"
+        mock_lesson.start_time = time(16, 0)
+        mock_lesson.end_time = time(17, 0)
+        mock_lesson.formatted_date = "24.04.2024"
+        mock_row = Mock(spec=Row)
+        mock_row.Lesson = mock_lesson
+        mock_row.Subject = mock_subject
+        mock_lesson_controller.get_all_lessons_with_subjects_within_dates.return_value = (
+            [mock_row]
+        )
+        with self.app.test_client(user=mock_user) as client:
+            response = client.get("/schedule/2024-04-24")
 
-#         mock_row_lesson_2 = Mock(spec=Row)
-#         mock_lesson_2 = Lesson(
-#             subject_id=1,
-#             date="2024-04-24",
-#             start_time=time(16, 00, 00),
-#             end_time=time(17, 00, 00),
-#             name=None,
-#         )
-#         mock_row_lesson_2.Lesson = mock_lesson_2
-#         mock_row_lesson_2.Lesson.id = 2
-#         mock_row_lesson_2.Lesson.formatted_date = "24.04.2024"
-#         mock_row_lesson_2.Subject = mock_subject
+        parser = AdvancedHTMLParser()
 
-#         mock_db.session.query.return_value.filter.return_value.filter.return_value.join.return_value.filter.return_value.all.return_value = [
-#             mock_row_lesson_1,
-#             mock_row_lesson_2,
-#         ]
-#         with self.app.test_client(user=mock_user) as client:
-#             response = client.get("/schedule/2024-04-24")
-#         print(response.data)
-#         assert response.status_code == 200
-#         assert b"16:00:00" in response.data
-#         assert b"17:00:00" in response.data
-#         assert b"Test Lesson 1" in response.data
-#         assert b"Test Subject" in response.data
+        parser.parseStr(response.text)
+
+        body_element = parser.body
+        table_element = parser.getElementsByTagName("table")[0]
+
+        assert response.status_code == 200
+        assert "16:00:00" in body_element.innerHTML
+        assert "17:00:00" in body_element.innerHTML
+        assert "Test Lesson" in body_element.innerHTML
+        assert "Test Subject" not in body_element.innerHTML
+        assert "None" not in body_element.innerHTML
+        assert "16:00:00" in table_element.innerHTML
+        assert "17:00:00" in table_element.innerHTML
+        assert "Test Lesson" in table_element.innerHTML
+        

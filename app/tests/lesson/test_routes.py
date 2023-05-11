@@ -65,13 +65,17 @@ class TestLessonControllerWithMocks(flask_testing.TestCase):
         parser.parseStr(response.text)
 
         body_element = parser.body
-
-        print(body_element.innerHTML)
+        table_element = parser.getElementsByTagName("table")[0]
+        heading_element = parser.getElementsByTagName("h2")[0]
 
         assert "Test Subject" in body_element.innerHTML
         assert "None" not in body_element.innerHTML
         assert "Test File" in body_element.innerHTML
         assert "photo/jpg" in body_element.innerHTML
+        assert "Test Subject" not in table_element.innerHTML
+        assert "Test File" in table_element.innerHTML
+        assert "photo/jpg" in table_element.innerHTML
+        assert "Test Subject" in heading_element.innerHTML
 
     @patch("app.extensions.authentication.User")
     @patch("app.lesson.controllers.File")
@@ -118,10 +122,16 @@ class TestLessonControllerWithMocks(flask_testing.TestCase):
         parser.parseStr(response.text)
 
         body_element = parser.body
+        table_element = parser.getElementsByTagName("table")[0]
+        heading_element = parser.getElementsByTagName("h2")[0]
 
-        print(body_element.innerHTML)
-
-        assert "Test Subject" in body_element.innerHTML
-        assert "Test Lesson" in body_element.innerHTML
+        assert response.status_code == 200
+        assert "None" not in body_element.innerHTML
         assert "Test File" in body_element.innerHTML
         assert "photo/jpg" in body_element.innerHTML
+        assert "Test Subject" not in table_element.innerHTML
+        assert "Test Lesson" not in table_element.innerHTML
+        assert "Test File" in table_element.innerHTML
+        assert "photo/jpg" in table_element.innerHTML
+        assert "Test Subject" in heading_element.innerHTML
+        assert "Test Lesson" in heading_element.innerHTML

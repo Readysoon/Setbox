@@ -2,6 +2,7 @@ from datetime import datetime
 from os import environ
 import flask_testing
 from flask_login import FlaskLoginClient
+from AdvancedHTMLParser import AdvancedHTMLParser
 from app.app import create_app
 from app.extensions.database.models import User, Subject, Lesson, File
 from app.extensions.database.database import db
@@ -35,8 +36,6 @@ class TestSubjectsRoutesWithDatabase(flask_testing.TestCase):
         return app
 
     def setUp(self):
-        # self.app = self.create_app()
-        # self.client = self.app.test_client()
         db.create_all()
 
     def tearDown(self):
@@ -48,13 +47,22 @@ class TestSubjectsRoutesWithDatabase(flask_testing.TestCase):
         user.set_password("test_password")
         db.session.add(user)
         db.session.commit()
+
         subject = Subject(name="Test Subject", owner_user_id=user.id)
         db.session.add(subject)
         db.session.commit()
+
+        parser = AdvancedHTMLParser()
+
         with self.app.test_client(user=user) as client:
             response = client.get("/subject")
+        
+        parser.parseStr(response.text)
+
+        body_element = parser.body
+
         assert response.status_code == 200
-        assert b"Test Subject" in response.data
+        assert "Test Subject" in body_element.innerHTML
 
     def test_subject_progress_with_db(self):
         user = User(email="testing_subject@setbox.de", first_name="SetBox")
@@ -129,52 +137,16 @@ class TestSubjectsRoutesWithDatabase(flask_testing.TestCase):
         with self.app.test_client(user=user) as client:
             response = client.get("/subject/" + str(subject.id))
         assert response.status_code == 200
-        assert b"50%" in response.data
-        assert b"No progress yet" in response.data
-        assert b'<div class="progress" style="width: 25%;"></div>' in response.data
+
+        parser = AdvancedHTMLParser()
+        parser.parseStr(response.text)
+        body_element = parser.body
+        progress_elements = parser.getElementsByClassName("progress")
+
+        assert len(progress_elements) == 1
+        assert "50%" in body_element.innerHTML
+        assert "No progress yet" in body_element.innerHTML
+        assert progress_elements[0].style == "width: 25%"
 
 
-# class TestSubjectsRoutesWithMocking(flask_testing.TestCase):
-#     def config(self):
-#         return Config(testing=True)
-
-#     def create_app(self):
-#         return create_app(self.config())
-
-#     def setUp(self):
-#         self.app = self.create_app()
-#         self.client = self.app.test_client()
-#         self.app.test_client_class = FlaskLoginClient
-
-#     @patch("app.subjects.routes.User")
-#     @patch("app.subjects.routes.current_user")
-#     @patch("app.subjects.routes.db")
-#     @patch("app.subjects.routes.Lesson")
-#     @patch("app.subjects.routes.Subject")
-#     def test_subject_with_mock(
-#         self, mock_subject, mock_lesson, mock_db, mock_current_user, mock_user
-#     ):
-#         mock_current_user.id = 1
-#         mock_subject.query.filter.return_value.first.return_value.owner_user_id = 1
-#         mock_subject.query.filter.return_value.first.return_value.name = "Test Subject"
-#         mock_lesson = Lesson(
-#             subject_id=1,
-#             date="2023-02-01",
-#             start_time="16:00:00",
-#             end_time="17:00:00",
-#             name="Test Lesson",
-#         )
-#         mock_row = Mock(spec=Row)
-#         mock_row.progress = 80
-#         mock_row.Lesson = mock_lesson
-#         # line-too-long
-#         mock_db.session.query.return_value.join.return_value.filter.return_value.filter.return_value.group_by.return_value.order_by.return_value.all.return_value = [
-#             mock_row
-#         ]
-#         mock_user = User(id=1, email="testing_login@setbox.de", first_name="Test Name")
-#         mock_user.set_password("test_password")
-#         with self.app.test_client(user=mock_user) as client:
-#             response = client.get("/subject/1")
-#         assert response.status_code == 200
-#         assert b"Test Subject" in response.data
-#         assert b"Test Lesson" in response.data
+# with mock?

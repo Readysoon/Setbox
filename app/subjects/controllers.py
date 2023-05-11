@@ -36,14 +36,13 @@ class SubjectController:
         return False
 
     def find_if_subject_is_shared(self, subject_id, user_id):
-        query = (
-            UserInSubject.query.join(Subject, isouter=True)
-            .join(User, isouter=True)
-            .filter(Subject.id == subject_id)
-            .filter(User.id == user_id)
+        user_in_subject = (
+            UserInSubject.query
+            .filter(UserInSubject.subject_id == subject_id)
+            .filter(UserInSubject.user_id == user_id)
             .first()
         )
-        if query != None:
+        if user_in_subject != None:
             return True
         return False
 
