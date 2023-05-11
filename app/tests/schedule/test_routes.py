@@ -83,7 +83,6 @@ class TestScheduleRoutesDatabase(flask_testing.TestCase):
         assert "Test Lesson 1" in table_element.innerHTML
 
 
-
 class TestScheduleRoutesMock(flask_testing.TestCase):
     def config(self):
         return Config(testing=True)
@@ -111,9 +110,9 @@ class TestScheduleRoutesMock(flask_testing.TestCase):
         mock_row = Mock(spec=Row)
         mock_row.Lesson = mock_lesson
         mock_row.Subject = mock_subject
-        mock_lesson_controller.get_all_lessons_with_subjects_within_dates.return_value = (
-            [mock_row]
-        )
+        mock_lesson_controller.get_all_lessons_with_subjects_within_dates.return_value = [
+            mock_row
+        ]
         with self.app.test_client(user=mock_user) as client:
             response = client.get("/schedule/2024-04-24")
 
@@ -133,4 +132,3 @@ class TestScheduleRoutesMock(flask_testing.TestCase):
         assert "16:00:00" in table_element.innerHTML
         assert "17:00:00" in table_element.innerHTML
         assert "Test Lesson" in table_element.innerHTML
-        

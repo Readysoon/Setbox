@@ -37,8 +37,7 @@ class SubjectController:
 
     def find_if_subject_is_shared(self, subject_id, user_id):
         user_in_subject = (
-            UserInSubject.query
-            .filter(UserInSubject.subject_id == subject_id)
+            UserInSubject.query.filter(UserInSubject.subject_id == subject_id)
             .filter(UserInSubject.user_id == user_id)
             .first()
         )

@@ -56,7 +56,7 @@ class TestSubjectsRoutesWithDatabase(flask_testing.TestCase):
 
         with self.app.test_client(user=user) as client:
             response = client.get("/subject")
-        
+
         parser.parseStr(response.text)
 
         body_element = parser.body
@@ -149,4 +149,4 @@ class TestSubjectsRoutesWithDatabase(flask_testing.TestCase):
         assert progress_elements[0].style == "width: 25%"
 
 
-# with mock?
+# with mock? test remaining routes with database

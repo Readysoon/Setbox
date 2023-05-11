@@ -10,7 +10,6 @@ from app.app import create_app
 from app.extensions.database.models import User, Subject, Lesson, File
 
 
-
 class TestLessonControllerWithMocks(flask_testing.TestCase):
     def config(self):
         return Config(testing=True)
@@ -135,3 +134,6 @@ class TestLessonControllerWithMocks(flask_testing.TestCase):
         assert "photo/jpg" in table_element.innerHTML
         assert "Test Subject" in heading_element.innerHTML
         assert "Test Lesson" in heading_element.innerHTML
+
+
+# test more routes
