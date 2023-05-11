@@ -43,7 +43,7 @@ class SubjectController:
             .filter(User.id == user_id)
             .first()
         )
-        if query is not None:
+        if query != None:
             return True
         return False
 
@@ -83,7 +83,7 @@ class SubjectController:
             .filter(Subject.id == subject_id)
             .first()
         )
-        if subject_progress_query.progress is None:
+        if subject_progress_query.progress == None:
             return 0
         return subject_progress_query.progress
 
@@ -91,7 +91,7 @@ class SubjectController:
         lessons = (
             db.session.query(
                 (self.calculate_percentage_with_files()).label("progress"),
-                func.count(File.reviewed is True).label("files"),
+                func.count(File.reviewed == True).label("files"),
                 Lesson,
             )
             .join(Lesson, full=True)
@@ -111,7 +111,7 @@ class SubjectController:
                     Subject.owner_user_id == user_id,
                     and_(
                         UserInSubject.user_id == user_id,
-                        UserInSubject.editor is True,
+                        UserInSubject.editor == True,
                     ),
                 )
             )

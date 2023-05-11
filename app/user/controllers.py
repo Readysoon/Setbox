@@ -28,7 +28,7 @@ class UserController:
             User.query.join(UserInSubject)
             .join(Subject)
             .filter(Subject.id == subject_id)
-            .filter(UserInSubject.editor is True)
+            .filter(UserInSubject.editor == True)
             .all()
         )
 
@@ -37,6 +37,6 @@ class UserController:
             User.query.join(UserInSubject)
             .join(Subject)
             .filter(Subject.id == subject_id)
-            .filter(UserInSubject.editor is False)
+            .filter(UserInSubject.editor == False)
             .all()
         )
